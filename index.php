@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// If the user is already logged in, redirect to the main data page
+if (isset($_SESSION['korisnik_id'])) {
+    header("Location: data_page.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,12 +21,15 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Login</h5>
-            <form action="php/login.php" method="post" >
-            <div class="form-group">
+            <form action="php/login.php" method="post">
+                <div class="form-group">
                     <label for="username">Username:</label>
-                        <input type="text" name="username" class="form-control" placeholder="Enter an username" required>
+                    <input type="text" name="username" class="form-control" placeholder="Enter an username" required>
+                </div>
+                <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter Your Password "required> </div>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter Your Password" required>
+                </div>
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
             <div class="text-center mt-3">
@@ -25,7 +38,6 @@
         </div>
     </div>
 </div>
-
-    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

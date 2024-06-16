@@ -1,5 +1,5 @@
 <?php
-include 'php/konekcija.php'; // Include database connection
+include 'konekcija.php'; // Include database connection
 
 session_start();
 

@@ -1,6 +1,5 @@
 <?php
-include 'php/konekcija.php'; // Include database connection
-
+include 'php/konekcija.php';
 session_start();
 
 // Redirect if user is not logged in
@@ -12,7 +11,10 @@ if (!isset($_SESSION['korisnik_id'])) {
 $user_id = $_SESSION['korisnik_id'];
 
 // Fetch user's profile details
-$sql_user = "SELECT username, height, sex, starting_weight, current_weight, goal_weight FROM users WHERE id = ?";
+$sql_user = "SELECT username, height, sex, starting_weight, current_weight, goal_weight
+             FROM users
+             WHERE id = ?";
+
 $stmt_user = $conn->prepare($sql_user);
 $stmt_user->bind_param('i', $user_id);
 $stmt_user->execute();
@@ -20,22 +22,29 @@ $result_user = $stmt_user->get_result();
 $user = $result_user->fetch_assoc();
 
 // Fetch user's nutrition goals
-$sql_nutrition = "SELECT calories, protein, carbs, fats, creatine, water FROM nutrition WHERE user_id = ? ORDER BY date DESC LIMIT 1";
+$sql_nutrition = "SELECT calories, protein, carbs, fats, creatine, water
+                 FROM nutrition
+                 WHERE user_id = ?
+                 ORDER BY date DESC
+                 LIMIT 1";
+
 $stmt_nutrition = $conn->prepare($sql_nutrition);
 $stmt_nutrition->bind_param('i', $user_id);
 $stmt_nutrition->execute();
 $result_nutrition = $stmt_nutrition->get_result();
 
+// Check if nutrition goals data exists
 if ($result_nutrition->num_rows > 0) {
     $nutrition = $result_nutrition->fetch_assoc();
 } else {
+    // Initialize $nutrition array with null values if no data found
     $nutrition = [
-        'calories' => '',
-        'protein' => '',
-        'carbs' => '',
-        'fats' => '',
-        'creatine' => '',
-        'water' => ''
+        'calories' => null,
+        'protein' => null,
+        'carbs' => null,
+        'fats' => null,
+        'creatine' => null,
+        'water' => null
     ];
 }
 
@@ -134,11 +143,11 @@ $conn->close();
                         </div>
                         <div class="form-group">
                             <label for="carbs">Carbohydrates</label>
-                            <input type="number" class="form-control" id="carbs" name="carbs" value="<?php echo htmlspecialchars($nutrition['carbs']); ?>" placeholder="Enter carbohydrates (g)">
+                            <input type="number" class="form-control" id="carbs" name="carbs" value="<?php echo htmlspecialchars($nutrition['carbs']); ?>" placeholder="Enter carbs (g)">
                         </div>
                         <div class="form-group">
-                            <label for="fat">Fat</label>
-                            <input type="number" class="form-control" id="fat" name="fat" value="<?php echo htmlspecialchars($nutrition['fats']); ?>" placeholder="Enter fat (g)">
+                            <label for="fats">Fats</label>
+                            <input type="number" class="form-control" id="fats" name="fats" value="<?php echo htmlspecialchars($nutrition['fats']); ?>" placeholder="Enter fats (g)">
                         </div>
                         <div class="form-group">
                             <label for="creatine">Creatine</label>
@@ -148,18 +157,14 @@ $conn->close();
                             <label for="water">Water</label>
                             <input type="number" class="form-control" id="water" name="water" value="<?php echo htmlspecialchars($nutrition['water']); ?>" placeholder="Enter water (ml)">
                         </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </div>
-
-                <button type="submit" class="btn btn-primary mt-3">Update Profile</button>
             </form>
         </div>
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.2"></script>
-<script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.5"></script>
 <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

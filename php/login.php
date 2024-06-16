@@ -2,11 +2,6 @@
 include 'konekcija.php';
 session_start();
 
-if (isset($_SESSION['korisnik_id'])) {
-    header("Location: ../data_page.php");
-    exit();
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -22,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->fetch();
         if (password_verify($password, $hashed_password)) {
             $_SESSION['korisnik_id'] = $id;
+            $_SESSION['korisnik_username'] = $username;  // Optional: Store username in session as well
             header("Location: ../data_page.php");
             exit();
         } else {
