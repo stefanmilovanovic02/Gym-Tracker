@@ -1,6 +1,6 @@
 
 <?php
-    // Podaci za konekciju
+    // Podaci za konekciju1
         $servername = "localhost"; 
         $username = "root"; 
         $password = "123"; 
