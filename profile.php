@@ -100,7 +100,7 @@ $conn->close();
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Profile Details</h5>
-            <form action="profile_update.php" method="post">
+            <form action="php/profile_update.php" method="post">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" class="form-control" id="username" value="<?php echo htmlspecialchars($user['username']); ?>" readonly>

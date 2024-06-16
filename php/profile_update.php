@@ -20,7 +20,7 @@ $goal_weight = $_POST['goalWeight'];
 $calories = $_POST['calories'];
 $protein = $_POST['protein'];
 $carbs = $_POST['carbs'];
-$fats = $_POST['fat'];
+$fats = $_POST['fats'];
 $creatine = $_POST['creatine'];
 $water = $_POST['water'];
 
