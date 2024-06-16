@@ -4,7 +4,7 @@ include 'php/konekcija.php'; // Include database connection
 session_start();
 
 // Redirect if user is not logged in
-if (!isset($_SESSION['korisnik_id'])) {     
+if (!isset($_SESSION['korisnik_id'])) {
     header("Location: index.php");
     exit();
 }
@@ -12,10 +12,7 @@ if (!isset($_SESSION['korisnik_id'])) {
 $user_id = $_SESSION['korisnik_id'];
 
 // Fetch user's profile details
-$sql_user = "SELECT username, height, sex, starting_weight, current_weight, goal_weight
-             FROM users
-             WHERE id = ?";
-
+$sql_user = "SELECT username, height, sex, starting_weight, current_weight, goal_weight FROM users WHERE id = ?";
 $stmt_user = $conn->prepare($sql_user);
 $stmt_user->bind_param('i', $user_id);
 $stmt_user->execute();
@@ -23,29 +20,22 @@ $result_user = $stmt_user->get_result();
 $user = $result_user->fetch_assoc();
 
 // Fetch user's nutrition goals
-$sql_nutrition = "SELECT calories, protein, carbs, fats, creatine, water
-                 FROM nutrition
-                 WHERE user_id = ?
-                 ORDER BY date DESC
-                 LIMIT 1";
-
+$sql_nutrition = "SELECT calories, protein, carbs, fats, creatine, water FROM nutrition WHERE user_id = ? ORDER BY date DESC LIMIT 1";
 $stmt_nutrition = $conn->prepare($sql_nutrition);
 $stmt_nutrition->bind_param('i', $user_id);
 $stmt_nutrition->execute();
 $result_nutrition = $stmt_nutrition->get_result();
 
-// Check if nutrition goals data exists
 if ($result_nutrition->num_rows > 0) {
     $nutrition = $result_nutrition->fetch_assoc();
 } else {
-    // Initialize $nutrition array with null values if no data found
     $nutrition = [
-        'calories' => null,
-        'protein' => null,
-        'carbs' => null,
-        'fats' => null,
-        'creatine' => null,
-        'water' => null
+        'calories' => '',
+        'protein' => '',
+        'carbs' => '',
+        'fats' => '',
+        'creatine' => '',
+        'water' => ''
     ];
 }
 
@@ -136,29 +126,28 @@ $conn->close();
                         <h5 class="card-title">Nutrition Goals</h5>
                         <div class="form-group">
                             <label for="calories">Calories</label>
-                            <input type="number" class="form-control" id="calories" name="calories" value="<?php echo isset($nutrition['calories']) ? htmlspecialchars($nutrition['calories']) : ''; ?>" placeholder="Enter calories (kcal)">
+                            <input type="number" class="form-control" id="calories" name="calories" value="<?php echo htmlspecialchars($nutrition['calories']); ?>" placeholder="Enter calories (kcal)">
                         </div>
                         <div class="form-group">
                             <label for="protein">Protein</label>
-                            <input type="number" class="form-control" id="protein" name="protein" value="<?php echo isset($nutrition['protein']) ? htmlspecialchars($nutrition['protein']) : ''; ?>" placeholder="Enter protein (g)">
+                            <input type="number" class="form-control" id="protein" name="protein" value="<?php echo htmlspecialchars($nutrition['protein']); ?>" placeholder="Enter protein (g)">
                         </div>
                         <div class="form-group">
                             <label for="carbs">Carbohydrates</label>
-                            <input type="number" class="form-control" id="carbs" name="carbs" value="<?php echo isset($nutrition['carbs']) ? htmlspecialchars($nutrition['carbs']) : ''; ?>" placeholder="Enter carbohydrates (g)">
+                            <input type="number" class="form-control" id="carbs" name="carbs" value="<?php echo htmlspecialchars($nutrition['carbs']); ?>" placeholder="Enter carbohydrates (g)">
                         </div>
                         <div class="form-group">
                             <label for="fat">Fat</label>
-                            <input type="number" class="form-control" id="fat" name="fat" value="<?php echo isset($nutrition['fats']) ? htmlspecialchars($nutrition['fats']) : ''; ?>" placeholder="Enter fat (g)">
+                            <input type="number" class="form-control" id="fat" name="fat" value="<?php echo htmlspecialchars($nutrition['fats']); ?>" placeholder="Enter fat (g)">
                         </div>
                         <div class="form-group">
                             <label for="creatine">Creatine</label>
-                            <input type="number" class="form-control" id="creatine" name="creatine" value="<?php echo isset($nutrition['creatine']) ? htmlspecialchars($nutrition['creatine']) : ''; ?>" placeholder="Enter creatine (g)">
+                            <input type="number" class="form-control" id="creatine" name="creatine" value="<?php echo htmlspecialchars($nutrition['creatine']); ?>" placeholder="Enter creatine (g)">
                         </div>
                         <div class="form-group">
                             <label for="water">Water</label>
-                            <input type="number" class="form-control" id="water" name="water" value="<?php echo isset($nutrition['water']) ? htmlspecialchars($nutrition['water']) : ''; ?>" placeholder="Enter water (ml)">
+                            <input type="number" class="form-control" id="water" name="water" value="<?php echo htmlspecialchars($nutrition['water']); ?>" placeholder="Enter water (ml)">
                         </div>
-                        <button type="submit" class="btn btn-primary" name="update_nutrition">Update Nutrition Goals</button>
                     </div>
                 </div>
 
@@ -169,7 +158,8 @@ $conn->close();
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.5"></script>
 <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
