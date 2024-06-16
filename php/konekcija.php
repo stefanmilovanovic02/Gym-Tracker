@@ -3,7 +3,7 @@
     // Podaci za konekciju
         $servername = "localhost"; 
         $username = "root"; 
-        $password = ""; 
+        $password = "123"; 
         $database = "teretana";
 
     // Konekcija sa bazom
