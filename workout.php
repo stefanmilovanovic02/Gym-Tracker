@@ -97,7 +97,7 @@ $stmt_workouts->close();
             <div class="card workout-card">
                 <div class="card-body">
                     <h5 class="card-title"><?php echo htmlspecialchars($workout['name']); ?>
-                        <a href="delete_workout.php?id=<?php echo $workout['id']; ?>" class="delete-link">delete</a>
+                        <a href="php/delete_workout.php?id=<?php echo $workout['id']; ?>" class="delete-link">delete</a>
                     </h5>
                     <p class="card-text">
                         <?php
