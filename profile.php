@@ -42,7 +42,7 @@ if ($result_nutrition->num_rows > 0) {
         'calories' => null,
         'protein' => null,
         'carbs' => null,
-        'fats' => null,
+        'fat' => null,
         'creatine' => null,
         'water' => null
     ];
@@ -81,6 +81,9 @@ $conn->close();
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" href="add.php">Add Today</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="workout.php">Workouts</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="charts.php">Charts</a>

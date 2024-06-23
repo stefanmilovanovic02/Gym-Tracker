@@ -60,6 +60,9 @@ $conn->close();
                 <a class="nav-link" href="add.php">Add Today</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="workout.php">Workouts</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="charts.php">Charts</a>
             </li>
             <li class="nav-item">

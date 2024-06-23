@@ -52,9 +52,9 @@ $conn->close();
 
 // Encode PHP arrays to JSON for JavaScript consumption
 $nutrition_json = json_encode($nutrition_data);
+$weights_json = json_encode($weights_data);
 $workouts_json = json_encode($workouts_data);
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -66,7 +66,7 @@ $workouts_json = json_encode($workouts_data);
     <title>Tracker</title>
 </head>
 <body>
-
+<!-- Additional styles -->
 <style>
     body {
         background-color: #1c1c1c;
@@ -98,6 +98,9 @@ $workouts_json = json_encode($workouts_data);
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" href="add.php">Add Today</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="workout.php">Workouts</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="charts.php">Charts</a>
@@ -133,7 +136,7 @@ $workouts_json = json_encode($workouts_data);
                 <div class="progress-bar bg-warning" role="progressbar" style="width: 0%" id="carbs-progress">0%</div>
             </div>
             <div class="progress mb-2">
-                <div class="progress-bar bg-danger" role="progressbar" style="width: 0%" id="fat-progress">0%</div>
+                <div class="progress-bar bg-danger" role="progressbar" style="width: 0%" id="fats-progress">0%</div>
             </div>
             <h5 class="card-title">Other</h5>
             <div class="progress mb-2">
