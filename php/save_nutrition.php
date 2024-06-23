@@ -13,14 +13,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $calories = $_POST['calories'];
     $protein = $_POST['protein'];
     $carbs = $_POST['carbs'];
-    $fat = $_POST['fat'];
+    $fats = $_POST['fats'];
     $creatine = $_POST['creatine'];
     $water = $_POST['water'];
 
     // Insert nutrition log
-    $sql_insert_nutrition = "INSERT INTO nutrition_log (user_id, date, calories, protein, carbs, fat, creatine, water) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?)";
+    $sql_insert_nutrition = "INSERT INTO nutrition_log (user_id, date, calories, protein, carbs, fats, creatine, water) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?)";
     $stmt_insert_nutrition = $conn->prepare($sql_insert_nutrition);
-    $stmt_insert_nutrition->bind_param('iiiiiii', $user_id, $calories, $protein, $carbs, $fat, $creatine, $water);
+    $stmt_insert_nutrition->bind_param('iiiiiii', $user_id, $calories, $protein, $carbs, $fats, $creatine, $water);
     $stmt_insert_nutrition->execute();
     $stmt_insert_nutrition->close();
 
