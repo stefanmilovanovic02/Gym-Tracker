@@ -11,21 +11,33 @@ if (!isset($_SESSION['korisnik_id'])) {
 if (isset($_GET['workout_id'])) {
     $workout_id = $_GET['workout_id'];
 
-    // Fetch exercises for the selected workout
-    $sql_exercises = "SELECT e.id, e.name FROM exercise_logs el JOIN exercises e ON el.exercise_id = e.id WHERE el.workout_id = ?";
+    // Fetch exercises for the selected workout from JSON in the workouts table
+    $sql = "SELECT exercises FROM workouts WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $workout_id);
+    $stmt->execute();
+    $stmt->bind_result($exercises_json);
+    $stmt->fetch();
+    $stmt->close();
+
+    $exercises = json_decode($exercises_json, true);
+
+    // Fetch exercise names
+    $placeholders = implode(',', array_fill(0, count($exercises), '?'));
+    $sql_exercises = "SELECT id, name FROM exercises WHERE id IN ($placeholders)";
     $stmt_exercises = $conn->prepare($sql_exercises);
-    $stmt_exercises->bind_param('i', $workout_id);
+    $stmt_exercises->bind_param(str_repeat('i', count($exercises)), ...$exercises);
     $stmt_exercises->execute();
     $result_exercises = $stmt_exercises->get_result();
 
-    $exercises = [];
+    $exercise_list = [];
     while ($row = $result_exercises->fetch_assoc()) {
-        $exercises[] = $row;
+        $exercise_list[] = $row;
     }
 
     $stmt_exercises->close();
     $conn->close();
 
-    echo json_encode($exercises);
+    echo json_encode($exercise_list);
 }
 ?>

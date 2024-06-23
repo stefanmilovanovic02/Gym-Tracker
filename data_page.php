@@ -97,6 +97,9 @@ $workouts_json = json_encode($workouts_data);
     <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
             <li class="nav-item">
+            <li class="nav-item">
+                <a class="nav-link" href="data_page.php">Home</a>
+            </li>
                 <a class="nav-link" href="add.php">Add Today</a>
             </li>
             <li class="nav-item">

@@ -44,6 +44,17 @@ $conn->close();
         .card {
             margin-bottom: 20px;
         }
+        .set-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .set-group input {
+            width: 30%;
+        }
+        .add-set-btn {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -52,11 +63,14 @@ $conn->close();
     <a class="navbar-brand" href="data_page.php">Logo</a>
     <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
+        <li class="nav-item">
+                <a class="nav-link" href="data_page.php">Home</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="add.php">Add Today</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="workouts.php">Workouts</a>
+                <a class="nav-link" href="workout.php">Workouts</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="charts.php">Charts</a>
@@ -110,10 +124,11 @@ $conn->close();
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Add Workout Routine</h5>
-            <form action="php/save_workout_log.php" method="post">
+            <form action="php/save_workout_log.php" method="post" id="workout-form">
                 <div class="form-group">
                     <label for="workout">Select Workout</label>
                     <select class="form-control" id="workout" name="workout" required>
+                        <option value="">Select workout</option>
                         <?php foreach ($workouts as $workout): ?>
                             <option value="<?php echo $workout['id']; ?>"><?php echo htmlspecialchars($workout['name']); ?></option>
                         <?php endforeach; ?>
@@ -122,7 +137,7 @@ $conn->close();
                 <div id="exercise-list">
                     <!-- Exercises will be loaded here with JavaScript -->
                 </div>
-                <button type="submit" class="btn btn-primary">Save Workout Log</button>
+                <button type="submit" class="btn btn-primary">Log Workout</button>
             </form>
         </div>
     </div>
@@ -132,7 +147,11 @@ $conn->close();
 <script>
 document.getElementById('workout').addEventListener('change', function() {
     let workoutId = this.value;
-    fetchExercises(workoutId);
+    if (workoutId) {
+        fetchExercises(workoutId);
+    } else {
+        document.getElementById('exercise-list').innerHTML = '';
+    }
 });
 
 function fetchExercises(workoutId) {
@@ -142,38 +161,35 @@ function fetchExercises(workoutId) {
             let exerciseList = document.getElementById('exercise-list');
             exerciseList.innerHTML = '';
             data.forEach(exercise => {
-                let exerciseFormGroup = document.createElement('div');
-                exerciseFormGroup.className = 'form-group';
-                
-                let exerciseLabel = document.createElement('label');
-                exerciseLabel.innerText = exercise.name;
-                
-                let weightInput = document.createElement('input');
-                weightInput.className = 'form-control';
-                weightInput.type = 'number';
-                weightInput.name = 'weight_' + exercise.id;
-                weightInput.placeholder = 'Enter weight (kg)';
-                
-                let setsInput = document.createElement('input');
-                setsInput.className = 'form-control';
-                setsInput.type = 'number';
-                setsInput.name = 'sets_' + exercise.id;
-                setsInput.placeholder = 'Enter number of sets';
-                
-                let repsInput = document.createElement('input');
-                repsInput.className = 'form-control';
-                repsInput.type = 'number';
-                repsInput.name = 'reps_' + exercise.id;
-                repsInput.placeholder = 'Enter number of reps';
-                
-                exerciseFormGroup.appendChild(exerciseLabel);
-                exerciseFormGroup.appendChild(weightInput);
-                exerciseFormGroup.appendChild(setsInput);
-                exerciseFormGroup.appendChild(repsInput);
-                
-                exerciseList.appendChild(exerciseFormGroup);
+                let exerciseCard = document.createElement('div');
+                exerciseCard.className = 'card';
+                exerciseCard.innerHTML = `
+                    <div class="card-body">
+                        <h5 class="card-title">${exercise.name}</h5>
+                        <div class="set-group">
+                            <label>Set 1</label>
+                            <input type="number" class="form-control" name="weight_${exercise.id}[]" placeholder="Weight (kg)">
+                            <input type="number" class="form-control" name="reps_${exercise.id}[]" placeholder="Reps">
+                        </div>
+                        <button type="button" class="btn btn-secondary add-set-btn" onclick="addSet(this, ${exercise.id})">Add set</button>
+                    </div>
+                `;
+                exerciseList.appendChild(exerciseCard);
             });
-        });
+        })
+        .catch(error => console.error('Error fetching exercises:', error));
+}
+
+function addSet(button, exerciseId) {
+    let setGroups = button.parentNode.querySelectorAll('.set-group').length + 1;
+    let setGroup = document.createElement('div');
+    setGroup.className = 'set-group';
+    setGroup.innerHTML = `
+        <label>Set ${setGroups}</label>
+        <input type="number" class="form-control" name="weight_${exerciseId}[]" placeholder="Weight (kg)">
+        <input type="number" class="form-control" name="reps_${exerciseId}[]" placeholder="Reps">
+    `;
+    button.parentNode.insertBefore(setGroup, button);
 }
 </script>
 </body>
