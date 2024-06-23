@@ -97,7 +97,7 @@ $conn->close();
     <div class="card workout-card">
         <div class="card-body">
             <h5 class="card-title">Add Workout</h5>
-            <form action="save_workout.php" method="post">
+            <form action="php/save_workout.php" method="post">
                 <div class="form-group">
                     <label for="name">Workout Name</label>
                     <input type="text" class="form-control" id="name" name="name" required>

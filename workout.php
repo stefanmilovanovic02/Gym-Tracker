@@ -11,7 +11,7 @@ if (!isset($_SESSION['korisnik_id'])) {
 $user_id = $_SESSION['korisnik_id'];
 
 // Fetch workouts
-$sql_workouts = "SELECT id, name FROM workouts WHERE user_id = ?";
+$sql_workouts = "SELECT id, name, exercises FROM workouts WHERE user_id = ?";
 $stmt_workouts = $conn->prepare($sql_workouts);
 $stmt_workouts->bind_param('i', $user_id);
 $stmt_workouts->execute();
@@ -23,7 +23,6 @@ while ($row = $result_workouts->fetch_assoc()) {
 }
 
 $stmt_workouts->close();
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -102,17 +101,21 @@ $conn->close();
                     </h5>
                     <p class="card-text">
                         <?php
-                        $sql_exercises = "SELECT e.name FROM exercise_logs el JOIN exercises e ON el.exercise_id = e.id WHERE el.workout_id = ?";
-                        $stmt_exercises = $conn->prepare($sql_exercises);
-                        $stmt_exercises->bind_param('i', $workout['id']);
-                        $stmt_exercises->execute();
-                        $result_exercises = $stmt_exercises->get_result();
-                        $exercises = [];
-                        while ($row = $result_exercises->fetch_assoc()) {
-                            $exercises[] = $row['name'];
+                        $exercise_ids = json_decode($workout['exercises']);
+                        $exercise_names = [];
+                        if (!empty($exercise_ids)) {
+                            $placeholders = implode(',', array_fill(0, count($exercise_ids), '?'));
+                            $sql_exercises = "SELECT name FROM exercises WHERE id IN ($placeholders)";
+                            $stmt_exercises = $conn->prepare($sql_exercises);
+                            $stmt_exercises->bind_param(str_repeat('i', count($exercise_ids)), ...$exercise_ids);
+                            $stmt_exercises->execute();
+                            $result_exercises = $stmt_exercises->get_result();
+                            while ($row = $result_exercises->fetch_assoc()) {
+                                $exercise_names[] = $row['name'];
+                            }
+                            $stmt_exercises->close();
                         }
-                        $stmt_exercises->close();
-                        echo htmlspecialchars(implode(', ', $exercises));
+                        echo htmlspecialchars(implode(', ', $exercise_names));
                         ?>
                     </p>
                 </div>
