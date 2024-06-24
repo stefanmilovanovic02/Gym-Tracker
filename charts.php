@@ -42,8 +42,12 @@ $stmt_exercise_logs->bind_param('i', $user_id);
 $stmt_exercise_logs->execute();
 $result_exercise_logs = $stmt_exercise_logs->get_result();
 $exercise_logs = [];
+$exercise_names = [];
 while ($row = $result_exercise_logs->fetch_assoc()) {
     $exercise_logs[] = $row;
+    if (!in_array($row['name'], $exercise_names)) {
+        $exercise_names[] = $row['name'];
+    }
 }
 $stmt_exercise_logs->close();
 
@@ -132,8 +136,8 @@ $conn->close();
                 Select Exercise
             </button>
             <div class="dropdown-menu">
-                <?php foreach ($exercise_logs as $log): ?>
-                    <a class="dropdown-item" href="#" onclick="selectChart('exercise', '<?php echo $log['name']; ?>')"><?php echo $log['name']; ?></a>
+                <?php foreach ($exercise_names as $name): ?>
+                    <a class="dropdown-item" href="#" onclick="selectChart('exercise', '<?php echo $name; ?>')"><?php echo $name; ?></a>
                 <?php endforeach; ?>
             </div>
         </div>

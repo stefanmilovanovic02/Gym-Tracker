@@ -83,7 +83,7 @@ $stmt_workouts->close();
                 <a class="nav-link" href="profile.php">Profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="workouts.php">Workouts</a>
+                <a class="nav-link" href="workout.php">Workouts</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="php/logout.php">Logout</a>
