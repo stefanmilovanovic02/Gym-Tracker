@@ -8,29 +8,27 @@ if (!isset($_SESSION['korisnik_id'])) {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $user_id = $_SESSION['korisnik_id'];
-    $workout_id = $_POST['workout'];
+$user_id = $_SESSION['korisnik_id'];
+$workout_id = $_POST['workout'];
+$date = date('Y-m-d');
 
-    foreach ($_POST as $key => $value) {
-        if (strpos($key, 'weight_') === 0) {
-            $exercise_id = str_replace('weight_', '', $key);
-            foreach ($value as $index => $weight) {
-                $reps = $_POST['reps_' . $exercise_id][$index];
-                $set_number = $index + 1;
-                // Insert exercise log
-                $sql_insert_exercise_log = "INSERT INTO exercise_logs (user_id, workout_id, exercise_id, sets, reps, weight, date) VALUES (?, ?, ?, ?, ?, ?, NOW())";
-                $stmt_insert_exercise_log = $conn->prepare($sql_insert_exercise_log);
-                $stmt_insert_exercise_log->bind_param('iiiidi', $user_id, $workout_id, $exercise_id, $set_number, $reps, $weight);
-                $stmt_insert_exercise_log->execute();
-                $stmt_insert_exercise_log->close();
-            }
+foreach ($_POST as $key => $value) {
+    if (strpos($key, 'weight_') === 0) {
+        $exercise_id = str_replace('weight_', '', $key);
+        foreach ($value as $index => $weight) {
+            $reps = $_POST['reps_' . $exercise_id][$index];
+            // Insert exercise log
+            $sql_insert_exercise_log = "INSERT INTO exercise_logs (user_id, workout_id, exercise_id, sets, reps, weight, date) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmt_insert_exercise_log = $conn->prepare($sql_insert_exercise_log);
+            $stmt_insert_exercise_log->bind_param('iiiidss', $user_id, $workout_id, $exercise_id, $index + 1, $reps, $weight, $date);
+            $stmt_insert_exercise_log->execute();
+            $stmt_insert_exercise_log->close();
         }
     }
-
-    $conn->close();
-
-    header("Location: ../add.php");
-    exit();
 }
+
+$conn->close();
+
+header("Location: ../add.php");
+exit();
 ?>

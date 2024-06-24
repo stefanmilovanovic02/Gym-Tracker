@@ -9,6 +9,16 @@ if (!isset($_SESSION['korisnik_id'])) {
 }
 
 $user_id = $_SESSION['korisnik_id'];
+$current_date = date('Y-m-d');
+
+// Fetch existing nutrition log for today
+$sql_nutrition_log = "SELECT * FROM nutrition_log WHERE user_id = ? AND date = ?";
+$stmt_nutrition_log = $conn->prepare($sql_nutrition_log);
+$stmt_nutrition_log->bind_param('is', $user_id, $current_date);
+$stmt_nutrition_log->execute();
+$result_nutrition_log = $stmt_nutrition_log->get_result();
+$nutrition_log = $result_nutrition_log->fetch_assoc();
+$stmt_nutrition_log->close();
 
 // Fetch workouts
 $sql_workouts = "SELECT id, name FROM workouts WHERE user_id = ?";
@@ -16,12 +26,10 @@ $stmt_workouts = $conn->prepare($sql_workouts);
 $stmt_workouts->bind_param('i', $user_id);
 $stmt_workouts->execute();
 $result_workouts = $stmt_workouts->get_result();
-
 $workouts = [];
 while ($row = $result_workouts->fetch_assoc()) {
     $workouts[] = $row;
 }
-
 $stmt_workouts->close();
 $conn->close();
 ?>
@@ -63,7 +71,7 @@ $conn->close();
     <a class="navbar-brand" href="data_page.php">Logo</a>
     <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
-        <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="data_page.php">Home</a>
             </li>
             <li class="nav-item">
@@ -91,29 +99,30 @@ $conn->close();
         <div class="card-body">
             <h5 class="card-title">Add Micronutrients</h5>
             <form action="php/save_nutrition.php" method="post">
+                <input type="hidden" name="date" value="<?php echo $current_date; ?>">
                 <div class="form-group">
                     <label for="calories">Calories</label>
-                    <input type="number" class="form-control" id="calories" name="calories" placeholder="Enter calories (kcal)" required>
+                    <input type="number" class="form-control" id="calories" name="calories" placeholder="Enter calories (kcal)" value="<?php echo $nutrition_log['calories'] ?? ''; ?>" required>
                 </div>
                 <div class="form-group">
                     <label for="protein">Protein</label>
-                    <input type="number" class="form-control" id="protein" name="protein" placeholder="Enter protein (g)" required>
+                    <input type="number" class="form-control" id="protein" name="protein" placeholder="Enter protein (g)" value="<?php echo $nutrition_log['protein'] ?? ''; ?>" required>
                 </div>
                 <div class="form-group">
                     <label for="carbs">Carbohydrates</label>
-                    <input type="number" class="form-control" id="carbs" name="carbs" placeholder="Enter carbohydrates (g)" required>
+                    <input type="number" class="form-control" id="carbs" name="carbs" placeholder="Enter carbohydrates (g)" value="<?php echo $nutrition_log['carbs'] ?? ''; ?>" required>
                 </div>
                 <div class="form-group">
                     <label for="fat">Fat</label>
-                    <input type="number" class="form-control" id="fat" name="fat" placeholder="Enter fat (g)" required>
+                    <input type="number" class="form-control" id="fat" name="fat" placeholder="Enter fat (g)" value="<?php echo $nutrition_log['fats'] ?? ''; ?>" required>
                 </div>
                 <div class="form-group">
                     <label for="creatine">Creatine</label>
-                    <input type="number" class="form-control" id="creatine" name="creatine" placeholder="Enter creatine (g)" required>
+                    <input type="number" class="form-control" id="creatine" name="creatine" placeholder="Enter creatine (g)" value="<?php echo $nutrition_log['creatine'] ?? ''; ?>" required>
                 </div>
                 <div class="form-group">
                     <label for="water">Water</label>
-                    <input type="number" class="form-control" id="water" name="water" placeholder="Enter water (ml)" required>
+                    <input type="number" class="form-control" id="water" name="water" placeholder="Enter water (ml)" value="<?php echo $nutrition_log['water'] ?? ''; ?>" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Nutrition</button>
             </form>
