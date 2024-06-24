@@ -60,15 +60,9 @@ $goals_json = json_encode($goals);
         .container {
             margin-top: 20px;
         }
-        .line-chart {
-            background-color: white;
-            color: black;
-            padding: 20px;
-            border-radius: 8px;
-        }
         .progress-bar {
             line-height: 20px;
-            height: 30px;
+            height: -10px;
         }
         .progress-title {
             margin-bottom: 5px;
@@ -97,7 +91,7 @@ $goals_json = json_encode($goals);
                 <a class="nav-link" href="add.php">Add Today</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="workouts.php">Workouts</a>
+                <a class="nav-link" href="workout.php">Workouts</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="charts.php">Charts</a>
@@ -136,8 +130,7 @@ $goals_json = json_encode($goals);
             <div class="progress-container">
                 <div class="progress-title">Carbohydrates</div>
                 <div class="progress">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: 0%" id="carbs-progress">0%</</div>
-                </div>
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 0%" id="carbs-progress">0%</div>
             </div>
             <div class="progress-container">
                 <div class="progress-title">Fat</div>
@@ -165,11 +158,6 @@ $goals_json = json_encode($goals);
             </div>
         </div>
     </div>
-
-    <div class="line-chart">
-        <h5 class="text-center">Line Chart</h5>
-        <canvas id="lineChart"></canvas>
-    </div>
 </div>
 
 <!-- Include Chart.js and datepicker libraries -->
@@ -180,8 +168,8 @@ $goals_json = json_encode($goals);
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    setInitialDate();
     loadProgressBars();
-    loadLineChart();
     $('#date-display').datepicker({
         format: 'yyyy-mm-dd',
         autoclose: true,
@@ -189,9 +177,13 @@ document.addEventListener("DOMContentLoaded", function() {
     }).on('changeDate', function(e) {
         document.getElementById('date-display').innerText = e.format();
         loadProgressBars();
-        loadLineChart();
     });
 });
+
+function setInitialDate() {
+    let today = new Date().toISOString().split('T')[0];
+    document.getElementById('date-display').innerText = today;
+}
 
 function loadProgressBars() {
     let nutritionData = <?php echo $nutrition_json; ?>;
@@ -211,8 +203,7 @@ function loadProgressBars() {
     }
 
     // Check if exercise log exists for the selected date
-    // This part is a placeholder and should be replaced with actual exercise log check
-    let exerciseLogExists = true;  // Replace this with actual check
+    let exerciseLogExists = checkExerciseLog(selectedDate);
     if (exerciseLogExists) {
         updateProgressBar('exercise', 100, 100);
     } else {
@@ -236,51 +227,20 @@ function resetProgressBars() {
     });
 }
 
-function loadLineChart() {
-    let ctx = document.getElementById('lineChart').getContext('2d');
-    let nutritionData = <?php echo $nutrition_json; ?>;
-    let selectedDate = document.getElementById('date-display').innerText;
-    let labels = nutritionData.map(data => data.date);
-    let caloriesData = nutritionData.map(data => data.calories);
-    let proteinData = nutritionData.map(data => data.protein);
-    let carbsData = nutritionData.map(data => data.carbs);
-    let fatsData = nutritionData.map(data => data.fats);
-    let creatineData = nutritionData.map(data => data.creatine);
-    let waterData = nutritionData.map(data => data.water);
-
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                { label: 'Calories', data: caloriesData, borderColor: 'rgba(75, 192, 192, 1)', fill: false },
-                { label: 'Protein', data: proteinData, borderColor: 'rgba(54, 162, 235, 1)', fill: false },
-                { label: 'Carbohydrates', data: carbsData, borderColor: 'rgba(255, 206, 86, 1)', fill: false },
-                { label: 'Fats', data: fatsData, borderColor: 'rgba(255, 99, 132, 1)', fill: false },
-                { label: 'Creatine', data: creatineData, borderColor: 'rgba(153, 102, 255, 1)', fill: false },
-                { label: 'Water', data: waterData, borderColor: 'rgba(255, 159, 64, 1)', fill: false }
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: { display: true, title: { display: true, text: 'Date' } },
-                y: { display: true, title: { display: true, text: 'Amount' } }
-            }
-        }
-    });
-}
-
 function changeDate(direction) {
     let currentDate = new Date(document.getElementById('date-display').innerText);
     currentDate.setDate(currentDate.getDate() + direction);
     document.getElementById('date-display').innerText = currentDate.toISOString().split('T')[0];
     loadProgressBars();
-    loadLineChart();
 }
 
 function showDatePicker() {
     $('#date-display').datepicker('show');
+}
+
+function checkExerciseLog(date) {
+    // Implement this function to check if there is an exercise log for the given date
+    return false;
 }
 </script>
 </body>
