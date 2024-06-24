@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $conn->close();
 
-    header("Location: ../workout.php");
+    header("Location: ../workouts.php");
     exit();
 }
 ?>
