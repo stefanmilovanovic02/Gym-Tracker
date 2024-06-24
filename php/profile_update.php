@@ -39,12 +39,12 @@ $result_nutrition_exists = $stmt_nutrition_exists->get_result();
 
 if ($result_nutrition_exists->num_rows > 0) {
     // Update existing nutrition goals
-    $sql_update_nutrition = "UPDATE nutrition SET calories = ?, protein = ?, carbs = ?, fat = ?, creatine = ?, water = ?, date = NOW() WHERE user_id = ?";
+    $sql_update_nutrition = "UPDATE nutrition SET calories = ?, protein = ?, carbs = ?, fats = ?, creatine = ?, water = ?, date = NOW() WHERE user_id = ?";
     $stmt_update_nutrition = $conn->prepare($sql_update_nutrition);
     $stmt_update_nutrition->bind_param('iiiiisi', $calories, $protein, $carbs, $fats, $creatine, $water, $user_id);
 } else {
     // Insert new nutrition goals
-    $sql_insert_nutrition = "INSERT INTO nutrition (user_id, date, calories, protein, carbs, fat, creatine, water) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?)";
+    $sql_insert_nutrition = "INSERT INTO nutrition (user_id, date, calories, protein, carbs, fats, creatine, water) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?)";
     $stmt_update_nutrition = $conn->prepare($sql_insert_nutrition);
     $stmt_update_nutrition->bind_param('iiiiiii', $user_id, $calories, $protein, $carbs, $fats, $creatine, $water);
 }
